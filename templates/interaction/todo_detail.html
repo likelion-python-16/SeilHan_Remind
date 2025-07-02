@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<h2>{{ todo.name }}</h2>
+<p>{{ todo.description }}</p>
+<p> 좋아요 수: {{ like_count }}</p>
+{% if like_obj.is_like == True %}
+    <p>이 글을 좋아합니다.</p>
+{% else %}
+    <p>좋아요를 눌렀지만, 지금은 취소된 상태입니다.</p>
+{% endif %}
+{% if bookmark_obj.is_marked == True %}
+    <p> 북마크 상태: 되어 있음</p>
+{% else %}
+    <p> 북마크 상태: 안되어 있음</p>
+{% endif %}
+
+<h3> 댓글 목록 </h3>
+{% for comment in comments %}
+<p>{{ comment }}</p>
+{% endfor %}
+</body>
+</html>

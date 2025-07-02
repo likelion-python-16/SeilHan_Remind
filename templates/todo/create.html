@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <h2>Create a New Todo</h2>
+
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name">
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        <textarea name="description" id="description"></textarea>
+    </div>
+    <div>
+        <label for="complete">Complete:</label>
+        <input type="checkbox" name="complete" id="complete">
+    </div>
+    <div>
+        <label for="image">Images:</label>
+        <input type="file" name="image" id="image">
+    </div>
+    <div>
+        <label for="exp">Experience Points</label>
+        <input type="number" name="exp" id="exp" min="0">
+    </div>
+    <button type="submit" id="todoCreate">Create</button>
+</div>
+
+<script>
+// 1. 초기화
+document.addEventListener("DOMContentLoaded", init);
+
+// 2. UI이벤트
+function init(){
+    bindUIEvents(); // 버튼에 클릭 이벤트 연결
+}
+
+// 3. UI 이벤트 바인딩
+// 클릭, 스크롤, 탭키, 문서로딩...
+function bindUIEvents(){
+    // 클릭이벤트의 조건: ID식별자.클릭하면.어떻게 해라
+    const btn = document.getElementById("todoCreate");
+    // 방어코드
+    if(!btn) return;
+    btn.addEventListener("click", onCreateClick);
+}
+
+// 데이터 수집 및 전송
+function onCreateClick(){
+    // 데이터 수집
+    const payload = gatherFormData();
+
+    // 서버에 전송
+    createTodo(payload);
+
+}
+
+// 데이터 평탄화
+// function gatherformData(){
+//     let expVal = document.getElementById("exp").value;
+//     // expVal이 문자열''이면 expVal에 0을 넣어라
+//     if (expVal === "") expVal = 0;
+//     // 예상치 못한 자동 변환 때문에 버그가 발생할 가능성을 대비하여 === 로 작성합니다.
+
+//     const completedAtInput = document.getElementById("completed_at").value;
+
+//     const completeAt = completedAtInput ? new Date(completedAtInput).toISOString() : null;
+
+//     return{
+//         name:document.getElementById("name").value,
+//         description:document.getElementById("description").value,
+//         complete:document.getElementById("complete").checked,
+//         completed_at:completeAt,
+//         exp:Number(expVal),
+//     };
+// }
+
+function gatherFormData(){
+    // 숫자처리
+    // let expVal = document.getElementById("exp").value;
+    // if (expVal === "") expVal = 0;
+    const expInput = document.getElementById('exp');
+    const expVal = expInput && expInput.value.trim() !== "" ? Number(expInput.value) : 0;
+
+    // 날짜처리
+    // const completedAtInput = document.getElementById("completed_at").value;
+    // const completeAt = completedAtInput ? new Date(completedAtInput).toISOString() : null;
+
+    // 이미지처리
+    const formData = new FormData(); 
+
+    // 텍스트 필드 추가
+    formData.append("name", document.getElementById("name").value);
+    formData.append("description", document.getElementById("description").value);
+    formData.append("complete", document.getElementById("complete").checked);
+    formData.append("exp", Number(expVal));
+
+    // 이미지 파일 추가
+    const imgInput = document.getElementById('image');
+    if(imgInput && imgInput.files.length > 0){
+        formData.append("image", imgInput.files[0]);
+    }
+
+    return formData;
+}
+
+// 서버전송
+function createTodo(payload){
+    axiosInstance.post("/todo/viewsets/view/", payload)
+    .then(response => {
+        window.location.href = "/todo/list/";
+    })
+    .catch(error => {
+        console.error("todo 생성 실패", error);
+        alert("todo 생성 실패했습니다.");
+    })
+}
+
+// function onCreateSuccess(){
+//     window.location.href = "/todo/list/"
+// }
+
+// function onCreateError(error){
+//     console.error("todo 생성 실패", error);
+//     alert("todo 생성 실패했습니다.");
+// }
+
+</script>
+
+{% endblock %}

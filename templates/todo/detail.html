@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="todoDetail"></div>
+<div>
+    <button class="todoUpdate">수정</button>
+    <button class="todoDelete">삭제</button>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", init);
+
+function init(){
+    const pk = getTodoId();
+    loadTodoDetail(pk);
+    bindUpdateButton(pk);
+    bindDeleteButton(pk);
+}
+
+function getTodoId(){
+    return window.location.pathname.split('/').filter(Boolean).pop();
+}
+
+function loadTodoDetail(pk){
+    axiosInstance
+    .get(`/todo/viewsets/view/${pk}/`)
+    .then(res => renderTodoDetail(res.data))
+    .catch(err => console.error('로딩실패', err));
+}
+
+function renderTodoDetail(data){
+    const container = document.querySelector(".todoDetail");
+    container.innerHTML = `
+        <div class="todo-item">
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Description:</strong> ${data.description}</p>
+            <p><strong>Complete:</strong> ${data.complete}</p>
+            <p><strong>Completed At:</strong> ${datetimeToString(data.completed_at)}</p>
+            <p><strong>Experience Points:</strong> ${data.exp}</p>
+        </div>
+    `;
+}
+
+function bindUpdateButton(pk){
+    const btn = document.querySelector('.todoUpdate');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        window.location.href = `/todo/update/${pk}/`;
+    });
+    // document.querySelector(".todoUpdate").addEventListener("click", () => window.location.href = `/todo/update/${pk}`);
+}
+
+function bindDeleteButton(pk){
+    const btn = document.querySelector('.todoDelete');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        if (!confirm('정말 해당 todo를 삭제하시겠습니까?')) return;
+
+        axiosInstance.delete(`/todo/viewsets/view/${pk}/`)
+        .then(() => window.location.href = `/todo/list/`)
+        .catch(err => alert("todo 삭제 실패했습니다."));
+    })
+}
+
+
+// function bindDeleteButton(pk){
+//     document.querySelector(".todoDelete").addEventListener("click", () => DeleteTodo(pk));
+// }
+
+// function DeleteTodo(pk){
+//     axiosInstance.delete(`/todo/api/delete/${pk}/`)
+//     .then(response => {
+//         window.location.href = `/todo/list/`;
+//     })
+//     .catch(error => {
+//         alert("todo 삭제 실패했습니다.");
+//     })
+// }
+
+</script>
+
+{% endblock %}
