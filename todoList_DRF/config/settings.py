@@ -157,15 +157,15 @@ LOGIN_URL = '/api_auth/login/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# # Fly 배포용 ALLOWED_HOSTS 설정
-# APP_NAME = os.environ.get("FLY_APP_NAME")
-# # ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev", "localhost", "127.0.0.1"]
-# ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev", "todolist-drf-shy-bird-4298.fly.dev",]
+# Fly 배포용 ALLOWED_HOSTS 설정
+APP_NAME = os.environ.get("FLY_APP_NAME")
+# ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [f"{APP_NAME}.fly.dev", "todolist-drf-misty-brook-2462.fly.dev",]
 
-# CSRF_TRUSTED_ORIGINS = [
-#     f"https://{APP_NAME}.fly.dev",
-#     "https://todolist-drf-shy-bird-4298.fly.dev",  # ← 본인 앱 도메인
-# ]
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{APP_NAME}.fly.dev",
+    "https://todolist-drf-misty-brook-2462.fly.dev/",  # ← 본인 앱 도메인
+]
 
 # 정적파일 경로
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
